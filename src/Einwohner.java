@@ -12,7 +12,9 @@ public class Einwohner {
     }
 
     public int steuer() {
-        // TODO
-        return 0;
+        int gesamtesEinkommen = zuVersteuern();
+        int abgaben = gesamtesEinkommen * 10 / 100;
+        if (abgaben < 1) abgaben = 1;
+        return abgaben;
     }
 }
