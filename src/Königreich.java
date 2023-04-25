@@ -1,22 +1,42 @@
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Königreich {
+
+    private static boolean enthältUngültigeSonderzeichen(String name) {
+        for (int i=0; i < name.length(); i++) {
+            char zeichen = name.charAt(i);
+            if ("0123456789-+/*!§$%&()[]{}^°~#€@<>|'\"\\".indexOf(zeichen) >= 0)
+                return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         Scanner eingabe = new Scanner(System.in);
 
         while (true) {
-            System.out.print("Bitte Namen eigeben: ");
-            String name = eingabe.nextLine();
+            String name;
+            do {
+                System.out.print("Bitte Namen (ohne Sonderzeichen) eingeben: ");
+                name = eingabe.nextLine();
+            } while ( enthältUngültigeSonderzeichen(name) );
+
             if ( name.isEmpty() ) break;
-            System.out.print("Bitte Einkommen eingeben: ");
-            int einkommen = eingabe.nextInt();
 
-            System.out.print("Welche Bevölkerungsgruppe (K, A, B, L): ");
-            char bevölkerungsgruppe = eingabe.next().toUpperCase().charAt(0);
-            eingabe.nextLine(); // rest der Zeile auffangen
+            int einkommen;
+            do {
+                System.out.print("Bitte Einkommen (>0) eingeben: ");
+                einkommen = eingabe.nextInt();
+            } while ( einkommen < 0 );
 
-            Einwohner einwohner;
+            char bevölkerungsgruppe;
+            do {
+                System.out.print("Welche Bevölkerungsgruppe (K, A, B, L): ");
+                bevölkerungsgruppe = eingabe.next().toUpperCase().charAt(0);
+                eingabe.nextLine(); // rest der Zeile auffangen
+            } while ("KABL".indexOf(bevölkerungsgruppe) < 0);
+
+            Einwohner einwohner = null;
             switch (bevölkerungsgruppe) {
                 case 'K':
                     einwohner = new König(name, einkommen);
@@ -31,11 +51,11 @@ public class Königreich {
                     einwohner = new Leibeigen(name, einkommen);
                     break;
                 default:
-                    einwohner = new Einwohner(name, einkommen);
+                    System.out.println("Ungültige Eingabe");
             }
 
-            System.out.println("Der Einwohner " + name + " muss " + einwohner.steuer() +
-                    " Taler Steuern zahlen!");
+            System.out.println("Der Einwohner " + name + " muss " +
+                    einwohner.steuer() + " Taler Steuern zahlen!");
         }
         System.out.println("Vielen Dank und auf Wiedersehen!");
     }
